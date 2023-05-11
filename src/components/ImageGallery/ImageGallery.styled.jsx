@@ -6,7 +6,7 @@ display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   grid-gap: 16px;
   margin-top: 0;
-  margin-bottom: 0;
+  margin-bottom: 20px;
   padding: 0;
   list-style: none;
   margin-left: auto;
@@ -26,10 +26,10 @@ padding: 8px 16px;
   cursor: pointer;
   font-family: inherit;
   font-size: 18px;
-  line-height: 24px;
+  line-height: 34px;
   font-style: normal;
   font-weight: 500;
-  min-width: 180px;
+  width: 100%;
   box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
     0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
 
