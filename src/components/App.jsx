@@ -1,42 +1,29 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { SearchImg } from './Searchbar/Searchbar';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-export class App extends Component {
-  state = {
-    searchQuery: '',
-    images: [],
-    page: 1,
-    error: '',
-    isLoading: false,
-    largeImageURL: '',
-    amount: 12,
-    openModal: false,
-  };
+export const App = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [images, setImages] = useState([]);
+  const [page, setPage] = useState(1);
+  // const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  // const [largeImageURL, setLargeImageURL] = useState('');
+  // const [amount, setEmount] = useState(12);
+  // const [openModal, setOpenModal] = useState(false);
 
-  componentDidUpdate(prevProps, prevState) {
-    const prevQuery = prevState.searchQuery;
-    const thisQuery = this.state.searchQuery;
-    if (prevQuery !== thisQuery || this.state.page !== prevState.page) {
-      this.fetchApi();
+  // i know its a lot, i just was treining =)
+
+  useEffect(() => {
+    if (!searchQuery) {
+      return;
     }
-  }
 
-  onLoadMore = () => {
-    this.setState(state => ({ page: state.page + 1 }));
-    console.log('onLoadMore');
-  };
-
-  handleFormSubmit = searchQuery => {
-    this.setState({ searchQuery, images: [], page: 1 });
-  };
-
-  fetchApi = () => {
     const KEY = '34696106-88b2027f4b58668cbaef654c9';
-    const URL = `https://pixabay.com/api/?key=${KEY}&q=${this.state.searchQuery}&image_type=photo&orientation=horizontal&page=${this.state.page}&per_page=${this.state.amount}`;
-    this.setState({ isLoading: true });
+    const URL = `https://pixabay.com/api/?key=${KEY}&q=${searchQuery}&image_type=photo&orientation=horizontal&page=${page}&per_page=12`;
+    setIsLoading(true);
 
     fetch(URL)
       .then(data => {
@@ -46,28 +33,51 @@ export class App extends Component {
       })
 
       .then(res => {
-        console.log(res);
-        this.setState(prevState => ({
-          images: [...(prevState.images || []), ...res.hits],
-          isLoading: false,
-        }));
+        setImages(prevImages => [...prevImages, ...res.hits]);
+        setIsLoading(false);
       })
 
       .catch(error => console.log(error));
+  }, [page, searchQuery]);
+
+  const onLoadMore = () => {
+    setPage(prevPage => prevPage + 1);
   };
 
-  render() {
-    return (
-      <>
-        <SearchImg onSubmit={this.handleFormSubmit} />
-        <ImageGallery
-          isLoading={this.state.isLoading}
-          images={this.state.images}
-          openModal={this.openModal}
-          onLoadMore={this.onLoadMore}
-        />
-        <ToastContainer autoClose={3000} />
-      </>
-    );
-  }
-}
+  const handleFormSubmit = searchQuery => {
+    setSearchQuery(searchQuery);
+    setImages([]);
+    setPage(1);
+  };
+
+  return (
+    <>
+      <SearchImg onSubmit={handleFormSubmit} />
+      <ImageGallery
+        isLoading={isLoading}
+        images={images}
+        onLoadMore={onLoadMore}
+      />
+      <ToastContainer autoClose={3000} />
+    </>
+  );
+};
+
+// state = {
+//   searchQuery: '',
+//   images: [],
+//   page: 1,
+//   error: '',
+//   isLoading: false,
+//   largeImageURL: '',
+//   amount: 12,
+//   openModal: false,
+// };
+
+// componentDidUpdate(prevProps, prevState) {
+//   const prevQuery = prevState.searchQuery;
+//   const thisQuery = this.state.searchQuery;
+//   if (prevQuery !== thisQuery || this.state.page !== prevState.page) {
+//     this.fetchApi();
+//   }
+// }

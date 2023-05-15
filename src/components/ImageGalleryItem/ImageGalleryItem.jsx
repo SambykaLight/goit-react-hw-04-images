@@ -9,7 +9,6 @@ const ImageGalleryItem = ({ images, openModal }) => {
         <ImgItem
           key={id}
           onClick={() => {
-            console.log(largeImageURL);
             openModal(largeImageURL, tags);
           }}
         >

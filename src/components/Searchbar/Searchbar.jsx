@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Searchbar,
@@ -8,50 +8,46 @@ import {
 } from './Searchbar.styled.jsx';
 import { toast } from 'react-toastify';
 
-export class SearchImg extends Component {
-  state = {
-    inputSearch: '',
+export const SearchImg = ({ onSubmit }) => {
+  const [inputSearch, setInputSearch] = useState('');
+
+  const handleInputChange = (event) => {
+    setInputSearch(event.target.value);
   };
 
-  handleInputChange = event => {
-    this.setState({ inputSearch: event.target.value });
-  };
-
-  handleSubmit = event => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    if (this.state.inputSearch.trim() === '') {
+    if (inputSearch.trim() === '') {
       toast.error('Nope, do it again..!');
       return;
     }
 
-    this.props.onSubmit(this.state.inputSearch);
-    this.reset();
+    onSubmit(inputSearch);
+    reset();
   };
 
-  reset = () => {
-    this.setState({ inputSearch: '' });
+  const reset = () => {
+    setInputSearch('');
   };
 
-  render() {
-    return (
-      <Searchbar>
-        <SearchForm onSubmit={this.handleSubmit}>
-          <SearchFormBtn type="submit">
-            <span>Search</span>
-          </SearchFormBtn>
+  return (
+    <Searchbar>
+      <SearchForm onSubmit={handleSubmit}>
+        <SearchFormBtn type="submit">
+          <span>Search</span>
+        </SearchFormBtn>
 
-          <SearchFormInput
-            type="text"
-            value={this.state.inputSearch}
-            onChange={this.handleInputChange}
-            autocomplete="off"
-            autoFocus
-            placeholder="Search images which you want..."
-          />
-        </SearchForm>
-      </Searchbar>
-    );
-  }
-}
+        <SearchFormInput
+          type="text"
+          value={inputSearch}
+          onChange={handleInputChange}
+          autocomplete="off"
+          autoFocus
+          placeholder="Search images which you want..."
+        />
+      </SearchForm>
+    </Searchbar>
+  );
+};
 
 SearchImg.propTypes = { onSubmit: PropTypes.func };

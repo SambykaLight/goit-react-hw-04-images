@@ -1,56 +1,59 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 import { GalleryBox, Btn } from './ImageGallery.styled.jsx';
 import Loader from '../Loader/Loader';
 import { ModalWindow } from '../Modal/Modal';
 
-export class ImageGallery extends Component {
-  state = {
-    isModalOpen: false,
-    largeImageURL: '',
-    text: '',
+export const ImageGallery = props => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [largeImageURL, setLargeImageURL] = useState('');
+  const [text, setText] = useState('');
+
+  const tooglModal = () => {
+    setIsModalOpen(prevIsModalOpen => !prevIsModalOpen);
   };
 
-  tooglModal = () => {
-    this.setState(({ isModalOpen }) => ({
-      isModalOpen: !isModalOpen,
-    }));
+  const openModal = (url, text) => {
+    tooglModal();
+    setLargeImageURL(url);
+    setText(text);
   };
 
-  openModal = (url, text) => {
-    this.tooglModal();
-    this.setState({ largeImageURL: url, text: text });
-  };
-  render() {
-    const { isModalOpen } = this.state;
-    return (
-      <>
-        <GalleryBox>
-          <ImageGalleryItem
-            images={this.props.images}
-            openModal={this.openModal}
-          ></ImageGalleryItem>
-        </GalleryBox>
-        {this.props.isLoading && <Loader />}
-        {this.props.images.length > 0 && (
-          <Btn type="button" onClick={this.props.onLoadMore}>
-            Load more
-          </Btn>
-        )}
-        {isModalOpen && (
-          <ModalWindow
-            onClose={this.tooglModal}
-            largeImg={this.state.largeImageURL}
-            text={this.state.text}
-          />
-        )}
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <GalleryBox>
+        <ImageGalleryItem
+          images={props.images}
+          openModal={openModal}
+        ></ImageGalleryItem>
+      </GalleryBox>
+      {props.isLoading && <Loader />}
+      {props.images.length > 0 && (
+        <Btn type="button" onClick={props.onLoadMore}>
+          Load more
+        </Btn>
+      )}
+      {isModalOpen && (
+        <ModalWindow
+          onClose={tooglModal}
+          largeImg={largeImageURL}
+          text={text}
+        />
+      )}
+    </>
+  );
+};
 
 ImageGallery.propTypes = {
-  images: PropTypes.array,
+  image: PropTypes.shape({
+    webformatURL: PropTypes.string,
+  }),
   onLoadMore: PropTypes.func,
 };
+
+// state = {
+//   isModalOpen: false,
+//   largeImageURL: '',
+//   text: '',
+// };
